@@ -1,0 +1,173 @@
+## 1. `components/**/*.{ts,tsx}` (UI 컴포넌트)
+
+- **파일명 & 타입**
+  - 컴포넌트: PascalCase (예: `Button.tsx`)
+  - Props 인터페이스: 컴포넌트명 + `Props` (예: `ButtonProps`)
+  - 테스트: `.test.tsx` (예: `Button.test.tsx`), 스토리북: `.stories.tsx` (예: `Button.stories.tsx`)
+- **디렉토리 구조**
+  - `ui/` (기본 UI), `forms/` (폼), `layouts/` (레이아웃),  
+    `modals/` (모달), `sections/` (섹션), `providers/` (Context Provider)
+- **작성 원칙**
+  1. 단일 책임 원칙
+  2. Props 인터페이스 명시 정의
+  3. 기본값: `defaultProps` 대신 매개변수 기본값 사용
+  4. 불필요한 `<div>` 중첩 제거, Fragment 활용
+- **shadcn/ui 활용**
+  - 기본 UI 컴포넌트 우선 사용
+  - variants로 커스터마이징
+- **성능 최적화**
+  - `React.lazy()`로 코드 스플리팅
+  - `React.memo`, `useMemo`, `useCallback` 등 메모이제이션
+  - 큰 리스트는 가상화 적용 (예: `react-virtual`)
+  - 이미지 최적화: `next/image` 컴포넌트
+- **접근성 (A11y)**
+  - 시맨틱 HTML
+  - ARIA 속성 적절히 사용
+  - 키보드 네비게이션 지원
+  - 충분한 색상 대비 보장
+- **상태 관리**
+  - 로컬 상태: `useState` / `useReducer`
+  - 전역 상태: Zustand
+  - 폼 상태: `react-hook-form`
+  - 서버 상태: React Query
+
+---
+
+## 2. `hooks/**/*.ts` (커스텀 훅)
+
+- **파일명**
+  - camelCase + `use` 접두사 (예: `useAuth.ts`)
+  - 테스트: `<hookName>.test.ts` (예: `useAuth.test.ts`)
+  - 타입: `<hookName>.types.ts` (예: `useAuth.types.ts`)
+- **디렉토리 구조**
+  - `auth/`, `form/`, `query/`, `store/`, `ui/`, `utils/`
+- **코드 작성 원칙**
+  1. 단일 책임 원칙
+  2. 입력 매개변수: 객체 (옵션 패턴)
+  3. 반환값: 객체 (구조 분해 할당 용이)
+  4. 의존성 배열 규칙 준수 (`useEffect`, `useCallback`, `useMemo`)
+  5. 조건부 훅 호출 금지
+- **타입 정의**
+  - 입력 인터페이스 (예: `UseAuthOptions`), 반환 인터페이스 (예: `UseAuthReturn`)
+  - 제네릭 타입 활용, 타입 가드 함수
+- **에러·로딩 처리**
+  - `try-catch` 사용
+  - `error`, `isError`, `isLoading` 상태 포함
+- **테스트**
+  - 주요 시나리오, 에러 케이스, 비동기 동작, 사이드 이펙트
+
+---
+
+## 3. `lib/**/*.ts` (유틸리티 함수)
+
+- **파일명**
+  - camelCase (예: `formatDate.ts`, `validateInput.ts`)
+  - 타입: `.types.ts`, 상수: `.constants.ts`, 테스트: `.test.ts`
+- **디렉토리 구조**
+  - `api/` (API 헬퍼),  
+    `config/` (환경 설정),  
+    `constants/` (상수),  
+    `types/` (공통 타입),  
+    `utils/` (일반 유틸),  
+    `validators/` (검증 함수)
+- **함수 작성**
+  1. 순수 함수 (부수효과 없음)
+  2. 단일 책임 원칙
+  3. 함수당 15줄 이내 권장
+  4. JSDoc 주석 작성
+- **타입 정의**
+  - 명확한 네이밍, 재사용 가능한 공통 타입, 제네릭, 유니온/인터섹션
+- **상수 관리**
+  - SNAKE_UPPER_CASE, 그룹화, 매직 넘버 금지, 환경 변수는 `config/`에서 관리
+- **API 관련**
+  - Axios 인스턴스 통일, 요청·응답 인터셉터, 에러 미들웨어
+- **유효성 검사**
+  - Zod 스키마 활용, 일관된 에러 메시지, 타입 가드 함수
+- **테스트**
+  - 단위 테스트, 엣지 케이스, 테스트 커버리지 80% 이상
+
+---
+
+## 4. `app/**/*.{ts,tsx}` (Next.js App Router)
+
+- **파일명 규칙**
+  - `page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx`, `not-found.tsx`
+  - API: `route.ts` (`app/api/.../route.ts`)
+  - 재사용 레이아웃: `template.tsx`
+- **디렉토리 구조**
+  - 그룹화: `(group)/`, 동적: `[param]/`, 병렬: `@modal/`,  
+    프라이빗 컴포넌트: `_components/`
+- **컴포넌트 작성**
+  - 기본: Server Component
+  - 클라이언트 필요 시 최하위에서만 `'use client'`
+  - 데이터 페칭은 Server Component에서
+- **메타데이터**
+  - `metadata` 객체 또는 `generateMetadata()`
+  - `robots.txt`, `sitemap.xml`은 `app/` 루트
+- **API 라우트**
+  - HTTP 메서드별 export, `NextResponse` 사용,  
+    에러 처리: `try-catch`와 적절한 상태 코드
+- **성능 최적화**
+  - 이미지: `next/image`, 폰트: `next/font`
+  - 동적 import, Streaming & Suspense
+
+---
+
+## 5. `**/*.{css,scss}` (스타일)
+
+- **Tailwind CSS**
+  - 유틸리티 클래스 우선, 커스텀은 `tailwind.config.ts`
+  - variants, 반응형, 다크모드 활용
+- **클래스 네이밍**
+  - kebab-case, 필요 시 BEM, 컴포넌트 접두사,  
+    상태: `is-`/`has-`, 유틸리티: `u-`
+- **글로벌 스타일**
+  - `globals.css`에 정의, CSS 변수, 리셋 CSS,  
+    기본 타이포그래피, 공통 애니메이션
+- **컴포넌트 스타일**
+  - CSS 모듈 대신 Tailwind, `@apply` 활용,  
+    미디어 쿼리는 Tailwind 브레이크포인트, `!important` 금지
+- **최적화**
+  - PurgeCSS, 번들 크기 최적화, 성능 중심 애니메이션
+  - `will-change` 속성 활용
+- **접근성**
+  - WCAG 2.1 대비, 키보드 포커스 스타일,  
+    반응형 폰트, 고대비·감소 모드 지원
+- **테마 & 애니메이션**
+  - CSS 변수 테마, 다크모드, 일관된 간격·그라데이션
+  - Tailwind 애니메이션, `prefers-reduced-motion`, transform/opacity 우선
+
+---
+
+## 6. `**/*.{ts,tsx}` (TypeScript 전반)
+
+- **타입 정의**
+  - `any` 금지, `unknown` 활용, 명시적 정의,  
+    필요 시 추론, 유니온 타입
+- **인터페이스 vs 타입**
+  - 인터페이스: 객체 구조,  
+    타입 별칭: 유니온/인터섹션,  
+    PascalCase 네이밍, 제네릭, `readonly`
+- **타입 가드**
+  - `is` 함수, `instanceof`, `in`, 커스텀 가드
+- **유틸리티 타입**
+  - `Partial<T>`, `Required<T>`, `Pick<T,K>`,  
+    `Omit<T,K>`, `Record<K,T>`
+- **단언**
+  - 타입 가드 우선, 비-널 (`!`) 최소화, `as const`
+- **제네릭**
+  - 의미 있는 이름 (T, U, K),  
+    제약(`extends`), 기본값, 조건부 타입
+- **모듈 시스템**
+  - `import type`, 배럴 파일(`index.ts`), 순환 참조 금지
+- **tsconfig.json**
+  ```json
+  {
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "esModuleInterop": true
+  }
+  ```
