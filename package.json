@@ -16,12 +16,14 @@
     "@mdx-js/react": "^3.1.0",
     "@next/mdx": "^15.1.7",
     "@notionhq/client": "^2.2.16",
+    "@radix-ui/react-label": "^2.1.2",
     "@radix-ui/react-select": "^2.1.6",
     "@radix-ui/react-separator": "^1.1.2",
     "@radix-ui/react-slot": "^1.1.2",
     "@stefanprobst/rehype-extract-toc": "^2.2.1",
     "@tailwindcss/postcss": "^4.0.6",
     "@tanstack/react-query": "^5.67.2",
+    "@tanstack/react-query-devtools": "^5.67.3",
     "@types/mdx": "^2.0.13",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -42,6 +44,7 @@
     "tailwind-merge": "^3.0.1",
     "tailwindcss": "^4.0.6",
     "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.24.2",
     "lightningcss-win32-x64-msvc": "^1.29.3"
   },
   "devDependencies": {
