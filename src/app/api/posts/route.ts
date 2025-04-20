@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   const startCursor = searchParams.get('startCursor') || undefined;
   const pageSize = Number(searchParams.get('pageSize')) || undefined;
 
-  const response = await getPublishedPosts({ tag, sort, startCursor, pageSize });
+  const response = await getPublishedPosts(tag, sort, pageSize, startCursor)();
 
   return NextResponse.json(response);
 }
