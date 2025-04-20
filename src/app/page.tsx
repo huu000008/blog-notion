@@ -24,8 +24,9 @@ export default async function Home({ searchParams }: HomeProps) {
   const selectedTag = tag || '전체';
   const selectedSort = sort || 'latest';
 
-  const tags = getTags();
-  const postsPromise = getPublishedPosts({ tag: selectedTag, sort: selectedSort });
+  const tags = await getTags();
+  // getPublishedPosts는 팩토리 함수이므로 반드시 ()로 실행해야 하며, Promise를 넘겨야 함
+  const postsPromise = getPublishedPosts(selectedTag, selectedSort, 10)();
   return (
     <div className="container py-8">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-[200px_1fr_220px]">
