@@ -1,34 +1,32 @@
-import type { NextConfig } from 'next';
-import createMDX from '@next/mdx';
-// import remarkGfm from 'remark-gfm';
-const nextConfig: NextConfig = {
-  /* config options here */
-  // experimental: {
-  //   typedRoutes: true,
-  // },
-  images: {
-    remotePatterns: [
-      {
-        hostname: 'picsum.photos',
-      },
-      {
-        hostname: 'images.unsplash.com',
-      },
-      {
-        hostname: 'prod-files-secure.s3.us-west-2.amazonaws.com',
-      },
-    ],
-  },
-  pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'mdx', 'md'],
+import withMDX from "@next/mdx";
+
+// RemotePattern 타입 직접 정의
+// next/image의 공식 타입 구조와 동일하게 맞춤
+// https://github.com/vercel/next.js/blob/canary/packages/next/types/index.ts 참고
+
+type RemotePattern = {
+  protocol?: "http" | "https";
+  hostname: string;
+  port?: string;
+  pathname?: string;
 };
 
-const withMDX = createMDX({
-  // 필요한 마크다운 플러그인을 추가할 수 있음~!
-  options: {
-    // remarkPlugins: [remarkGfm],
-    // ts-expect-error remark-gfm 타입 충돌 문제 해결
-    // remarkPlugins: [['remark-gfm']],
-  },
-});
+const remotePatterns: RemotePattern[] = [
+  { protocol: "https", hostname: "picsum.photos", pathname: "/**" },
+  { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },
+  { protocol: "https", hostname: "prod-files-secure.s3.us-west-2.amazonaws.com", pathname: "/**" },
+];
 
-export default withMDX(nextConfig);
+const nextConfig = {
+  pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
+  images: {
+    remotePatterns,
+  },
+  turbopack: {
+    resolveExtensions: [".mdx", ".md", ".tsx", ".ts", ".jsx", ".js", ".mjs", ".json"],
+  },
+};
+
+export default withMDX({
+  extension: /\.mdx?$/,
+})(nextConfig);

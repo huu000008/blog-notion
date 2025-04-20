@@ -12,7 +12,6 @@ import { compile } from '@mdx-js/mdx';
 import withSlugs from 'rehype-slug';
 import withToc from '@stefanprobst/rehype-extract-toc';
 import withTocExport from '@stefanprobst/rehype-extract-toc/mdx';
-import GiscusComments from '@/components/GiscusComments';
 import { notFound } from 'next/navigation';
 import { getPublishedPosts } from '@/lib/notion';
 import { Metadata } from 'next';
@@ -170,7 +169,6 @@ export default async function BlogPost({ params }: BlogPostProps) {
           <Separator className="my-16" />
 
           {/* 이전/다음 포스트 네비게이션 */}
-          <GiscusComments />
         </section>
         <aside className="relative hidden md:block">
           <div className="sticky top-[var(--sticky-top)]">
