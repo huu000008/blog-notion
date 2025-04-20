@@ -1,22 +1,19 @@
-import Link from 'next/link';
-import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
-import { CalendarDays } from 'lucide-react';
-import { getPostBySlug } from '@/lib/notion';
-import { formatDate } from '@/lib/date';
-import { MDXRemote } from 'next-mdx-remote/rsc';
-import remarkGfm from 'remark-gfm';
-import rehypeSanitize from 'rehype-sanitize';
-import rehypePrettyCode from 'rehype-pretty-code';
-import { compile } from '@mdx-js/mdx';
-import withSlugs from 'rehype-slug';
-import withToc from '@stefanprobst/rehype-extract-toc';
-import withTocExport from '@stefanprobst/rehype-extract-toc/mdx';
 import { notFound } from 'next/navigation';
-import { getPublishedPosts } from '@/lib/notion';
+import { getPostBySlug } from '@/lib/notion';
 import { Metadata } from 'next';
+import { NotionAPI } from 'notion-client';
+import { formatDate } from '@/lib/date';
+import { getToc } from '@/lib/toc';
+import { Separator } from '@/components/ui/separator';
+import { CalendarDays } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import NotionContent from '../../_components/NotionContent';
+import { TableOfContents } from '../../_components/TableOfContents';
 
-// 동적 메타데이터 생성
+interface BlogPostProps {
+  params: Promise<{ slug: string }>;
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -24,17 +21,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const { post } = await getPostBySlug(slug);
-
   if (!post) {
-    return {
-      title: '포스트를 찾을 수 없습니다',
-      description: '요청하신 블로그 포스트를 찾을 수 없습니다.',
-    };
+    return { title: '포스트를 찾을 수 없습니다' };
   }
-
   return {
     title: post.title,
-    description: post.description || `${post.title} - 조혁래 블로그`,
+    description: post.description,
     keywords: post.tags,
     authors: [{ name: post.author || '조혁래' }],
     publisher: '조혁래',
@@ -54,65 +46,23 @@ export async function generateMetadata({
   };
 }
 
-interface TocEntry {
-  value: string;
-  depth: number;
-  id?: string;
-  children?: Array<TocEntry>;
-}
-
-export const generateStaticParams = async () => {
-  const { posts } = await getPublishedPosts();
-  return posts.map((post) => ({
-    slug: post.slug,
-  }));
-};
-
 export const revalidate = 60;
-
-function TableOfContentsLink({ item }: { item: TocEntry }) {
-  return (
-    <div className="space-y-2">
-      <Link
-        key={item.id}
-        href={`#${item.id}`}
-        className={`hover:text-foreground text-muted-foreground block font-medium transition-colors`}
-      >
-        {item.value}
-      </Link>
-      {item.children && item.children.length > 0 && (
-        <div className="space-y-2 pl-4">
-          {item.children.map((subItem) => (
-            <TableOfContentsLink key={subItem.id} item={subItem} />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-interface BlogPostProps {
-  params: Promise<{ slug: string }>;
-}
 
 export default async function BlogPost({ params }: BlogPostProps) {
   const { slug } = await params;
-  const { markdown, post } = await getPostBySlug(slug);
+  const { post } = await getPostBySlug(slug);
 
   if (!post) {
     notFound();
   }
 
-  const { data } = await compile(markdown, {
-    rehypePlugins: [
-      withSlugs,
-      rehypeSanitize,
-      withToc,
-      withTocExport,
-      /** Optionally, provide a custom name for the export. */
-      // [withTocExport, { name: 'toc' }],
-    ],
-  });
+  // Notion 페이지 데이터 fetch (recordMap)
+  const notion = new NotionAPI();
+  const pageId = post.id; // 실제로는 slug→id 매핑 필요할 수 있음
+  const recordMap = await notion.getPage(pageId);
+
+  // 목차 데이터 추출
+  const toc = getToc(recordMap);
 
   return (
     <div className="container py-6 md:py-8 lg:py-12">
@@ -127,7 +77,6 @@ export default async function BlogPost({ params }: BlogPostProps) {
               </div>
               <h1 className="text-3xl font-bold md:text-4xl">{post.title}</h1>
             </div>
-
             {/* 메타 정보 */}
             <div className="text-muted-foreground flex gap-4 text-sm">
               <div className="flex items-center gap-1">
@@ -143,36 +92,18 @@ export default async function BlogPost({ params }: BlogPostProps) {
           <div className="sticky top-[var(--sticky-top)] mb-6 md:hidden">
             <details className="bg-muted/60 rounded-lg p-4 backdrop-blur-sm">
               <summary className="cursor-pointer text-lg font-semibold">목차</summary>
-              <nav className="mt-3 space-y-3 text-sm">
-                {data?.toc?.map((item) => <TableOfContentsLink key={item.id} item={item} />)}
-              </nav>
+              <TableOfContents toc={toc} className="mt-3 space-y-3 text-sm" />
             </details>
           </div>
 
-          {/* 블로그 본문 */}
-          <div className="prose prose-neutral dark:prose-invert prose-headings:scroll-mt-[var(--header-height)] max-w-none">
-            <MDXRemote
-              source={markdown}
-              options={{
-                mdxOptions: {
-                  remarkPlugins: [remarkGfm],
-                  rehypePlugins: [withSlugs, rehypeSanitize, rehypePrettyCode],
-                },
-              }}
-            />
-          </div>
-
-          <Separator className="my-16" />
-
-          {/* 이전/다음 포스트 네비게이션 */}
+          {/* 본문 */}
+          <NotionContent recordMap={recordMap} />
         </section>
         <aside className="relative hidden md:block">
           <div className="sticky top-[var(--sticky-top)]">
             <div className="bg-muted/60 space-y-4 rounded-lg p-6 backdrop-blur-sm">
               <h3 className="text-lg font-semibold">목차</h3>
-              <nav className="space-y-3 text-sm">
-                {data?.toc?.map((item) => <TableOfContentsLink key={item.id} item={item} />)}
-              </nav>
+              <TableOfContents toc={toc} className="space-y-3 text-sm" />
             </div>
           </div>
         </aside>

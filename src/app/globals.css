@@ -151,3 +151,39 @@
   @apply mx-auto max-w-[1400px] px-4;
   width: 100%;
 }
+
+.notion-collection-page-properties {
+  display: none !important;
+}
+
+/* 인라인 코드(코드 하이라이트) 색상 변경 */
+.notion-code,
+.notion-inline-code {
+  background: theme('colors.zinc.100') !important; /* Tailwind zinc-100 */
+  color: theme('colors.pink.600') !important;      /* Tailwind pink-600 */
+}
+
+/* callout(박스) 배경색 */
+.notion-callout {
+  background: theme('colors.slate.50') !important; /* Tailwind slate-50 */
+}
+
+/* 코드 블록 전체 */
+.notion-code-block {
+  background: theme('colors.zinc.900') !important; /* Tailwind zinc-900 */
+  color: theme('colors.zinc.100') !important;      /* Tailwind zinc-100 */
+}
+
+/* 다크모드 대응 */
+.dark .notion-code,
+.dark .notion-inline-code {
+  background: theme('colors.zinc.800') !important; /* Tailwind zinc-800 */
+  color: theme('colors.pink.300') !important;      /* Tailwind pink-300 */
+}
+.dark .notion-callout {
+  background: theme('colors.slate.800') !important; /* Tailwind slate-800 */
+}
+.dark .notion-code-block {
+  background: theme('colors.zinc.800') !important; /* Tailwind zinc-800 */
+  color: theme('colors.zinc.100') !important;      /* Tailwind zinc-100 */
+}

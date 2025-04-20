@@ -1,13 +1,11 @@
 import { Client } from '@notionhq/client';
 import type { Post, TagFilterItem } from '@/types/blog';
 import type { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
-import { NotionToMarkdown } from 'notion-to-md';
 import { unstable_cache } from 'next/cache';
 
 export const notion = new Client({
   auth: process.env.NOTION_TOKEN,
 });
-const n2m = new NotionToMarkdown({ notionClient: notion });
 
 function getPostMetadata(page: PageObjectResponse): Post {
   const { properties } = page;
@@ -51,7 +49,6 @@ export const getPostBySlug = unstable_cache(
   async (
     slug: string
   ): Promise<{
-    markdown: string;
     post: Post | null;
   }> => {
     const response = await notion.databases.query({
@@ -76,16 +73,11 @@ export const getPostBySlug = unstable_cache(
 
     if (!response.results[0]) {
       return {
-        markdown: '',
         post: null,
       };
     }
 
-    const mdBlocks = await n2m.pageToMarkdown(response.results[0].id);
-    const { parent } = n2m.toMarkdownString(mdBlocks);
-
     return {
-      markdown: parent,
       post: getPostMetadata(response.results[0] as PageObjectResponse),
     };
   },
