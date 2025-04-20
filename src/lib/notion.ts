@@ -47,49 +47,54 @@ function getPostMetadata(page: PageObjectResponse): Post {
   };
 }
 
-export const getPostBySlug = async (
-  slug: string
-): Promise<{
-  markdown: string;
-  post: Post | null;
-}> => {
-  const response = await notion.databases.query({
-    database_id: process.env.NOTION_DATABASE_ID!,
-    filter: {
-      and: [
-        {
-          property: 'Slug',
-          rich_text: {
-            equals: slug,
+export const getPostBySlug = unstable_cache(
+  async (
+    slug: string
+  ): Promise<{
+    markdown: string;
+    post: Post | null;
+  }> => {
+    const response = await notion.databases.query({
+      database_id: process.env.NOTION_DATABASE_ID!,
+      filter: {
+        and: [
+          {
+            property: 'Slug',
+            rich_text: {
+              equals: slug,
+            },
           },
-        },
-        {
-          property: 'Status',
-          select: {
-            equals: 'Published',
+          {
+            property: 'Status',
+            select: {
+              equals: 'Published',
+            },
           },
-        },
-      ],
-    },
-  });
+        ],
+      },
+    });
 
-  if (!response.results[0]) {
+    if (!response.results[0]) {
+      return {
+        markdown: '',
+        post: null,
+      };
+    }
+
+    const mdBlocks = await n2m.pageToMarkdown(response.results[0].id);
+    const { parent } = n2m.toMarkdownString(mdBlocks);
+
     return {
-      markdown: '',
-      post: null,
+      markdown: parent,
+      post: getPostMetadata(response.results[0] as PageObjectResponse),
     };
+  },
+  ['post'],
+  {
+    tags: ['post'],
+    revalidate: 60,
   }
-
-  const mdBlocks = await n2m.pageToMarkdown(response.results[0].id);
-  const { parent } = n2m.toMarkdownString(mdBlocks);
-
-  return {
-    markdown: parent,
-    post: getPostMetadata(response.results[0] as PageObjectResponse),
-  };
-
-  // return getPageMetadata(response);
-};
+);
 
 export interface GetPublishedPostsParams {
   tag?: string;
@@ -155,6 +160,7 @@ export const getPublishedPosts = unstable_cache(
   undefined,
   {
     tags: ['posts'],
+    revalidate: 60,
   }
 );
 

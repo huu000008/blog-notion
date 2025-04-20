@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { CalendarDays, User } from 'lucide-react';
+import { CalendarDays } from 'lucide-react';
 import { getPostBySlug } from '@/lib/notion';
 import { formatDate } from '@/lib/date';
 import { MDXRemote } from 'next-mdx-remote/rsc';
@@ -130,10 +130,6 @@ export default async function BlogPost({ params }: BlogPostProps) {
 
             {/* 메타 정보 */}
             <div className="text-muted-foreground flex gap-4 text-sm">
-              <div className="flex items-center gap-1">
-                <User className="h-4 w-4" />
-                <span>{post.author}</span>
-              </div>
               <div className="flex items-center gap-1">
                 <CalendarDays className="h-4 w-4" />
                 <span>{formatDate(post.date)}</span>

@@ -1,5 +1,3 @@
-import ProfileSection from '@/app/_components/ProfileSection';
-import ContactSection from '@/app/_components/ContactSection';
 import { getTags, getPublishedPosts } from '@/lib/notion';
 import HeaderSection from '@/app/_components/HeaderSection';
 import PostListSuspense from '@/components/features/blog/PostListSuspense';
@@ -47,8 +45,8 @@ export default async function Home({ searchParams }: HomeProps) {
         </div>
         {/* 우측 사이드바 */}
         <aside className="order-1 flex flex-col gap-6 md:order-none">
-          <ProfileSection />
-          <ContactSection />
+          {/* <ProfileSection /> */}
+          {/* <ContactSection /> */}
         </aside>
       </div>
     </div>
