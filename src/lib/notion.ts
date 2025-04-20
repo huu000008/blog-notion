@@ -1,9 +1,6 @@
 import { Client } from '@notionhq/client';
 import type { Post, TagFilterItem } from '@/types/blog';
-import type {
-  PageObjectResponse,
-  PersonUserObjectResponse,
-} from '@notionhq/client/build/src/api-endpoints';
+import type { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import { NotionToMarkdown } from 'notion-to-md';
 import { unstable_cache } from 'next/cache';
 
@@ -14,7 +11,6 @@ const n2m = new NotionToMarkdown({ notionClient: notion });
 
 function getPostMetadata(page: PageObjectResponse): Post {
   const { properties } = page;
-
   const getCoverImage = (cover: PageObjectResponse['cover']) => {
     if (!cover) return '';
 
@@ -40,12 +36,10 @@ function getPostMetadata(page: PageObjectResponse): Post {
       properties.Tags.type === 'multi_select'
         ? properties.Tags.multi_select.map((tag) => tag.name)
         : [],
-    author:
-      properties.Author.type === 'people'
-        ? ((properties.Author.people[0] as PersonUserObjectResponse)?.name ?? '')
+    date:
+      properties.Created_time.type === 'created_time'
+        ? (properties.Created_time.created_time ?? '')
         : '',
-    date: properties.Date.type === 'date' ? (properties.Date.date?.start ?? '') : '',
-    modifiedDate: page.last_edited_time,
     slug:
       properties.Slug.type === 'rich_text'
         ? (properties.Slug.rich_text[0]?.plain_text ?? page.id)
@@ -140,7 +134,7 @@ export const getPublishedPosts = unstable_cache(
       },
       sorts: [
         {
-          property: 'Date',
+          property: 'Created_time',
           direction: sort === 'latest' ? 'descending' : 'ascending',
         },
       ],
@@ -235,11 +229,6 @@ export const createPost = async ({ title, tag, content }: CreatePostParams) => {
       Status: {
         select: {
           name: 'Published',
-        },
-      },
-      Date: {
-        date: {
-          start: new Date().toISOString(),
         },
       },
     },
