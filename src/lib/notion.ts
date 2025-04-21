@@ -195,6 +195,19 @@ export const getTags = async (): Promise<TagFilterItem[]> => {
 };
 
 /**
+ * Notion 페이지 recordMap 캐싱
+ */
+export const getNotionRecordMap = unstable_cache(
+  async (pageId: string) => {
+    const { NotionAPI } = await import('notion-client');
+    const notion = new NotionAPI();
+    return notion.getPage(pageId);
+  },
+  ['notion-record-map'],
+  { tags: ['notion-record-map'], revalidate: 60 }
+);
+
+/**
  * 게시글 생성
  */
 export const createPost = async ({ title, tag, content }: CreatePostParams) => {

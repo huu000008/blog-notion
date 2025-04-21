@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation';
-import { getPostBySlug } from '@/lib/notion';
+import { getPostBySlug, getNotionRecordMap } from '@/lib/notion';
 import { Metadata } from 'next';
-import { NotionAPI } from 'notion-client';
 import { formatDate } from '@/lib/date';
 import { getToc } from '@/lib/toc';
 import { Separator } from '@/components/ui/separator';
@@ -57,9 +56,8 @@ export default async function BlogPost({ params }: BlogPostProps) {
   }
 
   // Notion 페이지 데이터 fetch (recordMap)
-  const notion = new NotionAPI();
-  const pageId = post.id; // 실제로는 slug→id 매핑 필요할 수 있음
-  const recordMap = await notion.getPage(pageId);
+  const pageId = post.id;
+  const recordMap = await getNotionRecordMap(pageId);
 
   // 목차 데이터 추출
   const toc = getToc(recordMap);
