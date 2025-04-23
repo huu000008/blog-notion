@@ -5,6 +5,7 @@ import { NotionRenderer } from 'react-notion-x';
 import { ExtendedRecordMap } from 'notion-types';
 import { useTheme } from 'next-themes';
 import 'react-notion-x/src/styles.css';
+import 'prismjs/themes/prism-tomorrow.css';
 import { useState, useEffect } from 'react'; // Import useState and useEffect
 
 const Code = dynamic(() => import('react-notion-x/build/third-party/code').then((m) => m.Code), {
@@ -35,7 +36,7 @@ export default function NotionContent({ recordMap }: { recordMap: ExtendedRecord
 
   return (
     // Apply theme class only when mounted
-    <div className={`prose prose-neutral my-8 max-w-none ${isDark ? 'dark:prose-invert' : ''}`}>
+    <div className={`my-8 max-w-none ${isDark ? 'dark' : ''}`}>
       <NotionRenderer
         recordMap={recordMap}
         fullPage={false}

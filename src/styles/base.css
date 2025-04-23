@@ -1,0 +1,25 @@
+/* 글로벌 리셋, 타이포그래피, 공통 스타일 */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.container {
+  @apply mx-auto max-w-[1400px] px-4;
+  width: 100%;
+}
+
+.notion-collection-page-properties {
+  display: none !important;
+}
+
+.notion-page {
+  width: 100% !important;
+}
+.notion-hr {
+  border-top: 1px solid var(--border) !important;
+}
