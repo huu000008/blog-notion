@@ -1,7 +1,7 @@
-import { Input } from './input';
-import { Button } from './button';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
 
 interface SearchInputProps {
   placeholder?: string;

@@ -1,5 +1,6 @@
 'use client';
 
+import { SearchInput } from '@/components/SearchInput';
 import {
   Select,
   SelectContent,
@@ -8,7 +9,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { SearchInput } from '@/components/ui/SearchInput';
 
 export default function SortSelect() {
   const router = useRouter();

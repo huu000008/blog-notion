@@ -66,13 +66,23 @@ export default function PostList({ postsPromise }: PostListProps) {
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4">
-        {allPosts.map((post, index) => (
-          <Link href={`/blog/${post.slug}`} key={post.id}>
-            <PostCard post={post} isFirst={index === 0} />
-          </Link>
-        ))}
-      </div>
+      {allPosts.length === 0 ? (
+        <div className="flex h-[300px] flex-col items-center justify-center py-24">
+          <span className="text-muted-foreground text-lg">검색 결과가 없습니다.</span>
+          <span className="text-muted-foreground/70 mt-2 text-sm">
+            다른 <b className="text-primary">태그</b>를 선택하거나{' '}
+            <b className="text-primary">검색어</b>를 변경해보세요.
+          </span>
+        </div>
+      ) : (
+        <div className="grid gap-4">
+          {allPosts.map((post, index) => (
+            <Link href={`/blog/${post.slug}`} key={post.id}>
+              <PostCard post={post} isFirst={index === 0} />
+            </Link>
+          ))}
+        </div>
+      )}
       {hasNextPage && !isFetchingNextPage && <div ref={ref} className="h-10" />}
       {isFetchingNextPage && (
         <div className="flex items-center justify-center gap-2 py-4">

@@ -1,11 +1,11 @@
 import { getTags, getPublishedPosts } from '@/lib/notion';
+import { NOTION_TAG_ALL } from '@/lib/constants/notion.constants';
 import PostList from '@/components/features/blog/PostList';
 import { Suspense } from 'react';
 import PostListSkeleton from '@/components/features/blog/PostListSkeleton';
 import TagSectionSkeleton from '@/app/_components/TagSectionSkeleton';
 import { Metadata } from 'next';
 import TagSection from './_components/TagSection';
-import { SearchSortBar } from './_components/client/SortSelect';
 
 interface HomeProps {
   searchParams: Promise<{ tag?: string; sort?: string; q?: string }>;
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 
 export default async function Home({ searchParams }: HomeProps) {
   const { tag, sort, q } = await searchParams;
-  const selectedTag = tag || '전체';
+  const selectedTag = tag || NOTION_TAG_ALL;
   const selectedSort = sort || 'latest';
   const searchQuery = q || '';
 
@@ -34,12 +34,10 @@ export default async function Home({ searchParams }: HomeProps) {
         {/* 좌측 사이드바 */}
         <aside className="order-2 md:order-none">
           <Suspense fallback={<TagSectionSkeleton />}>
-            <TagSection tags={tags} selectedTag={selectedTag} />
+            <TagSection tags={tags} selectedTag={selectedTag} searchQuery={searchQuery} />
           </Suspense>
         </aside>
         <div className="order-3 space-y-8 md:order-none">
-          {/* 검색/정렬 바 */}
-          <SearchSortBar />
           {/* 블로그 카드 그리드 */}
           <Suspense fallback={<PostListSkeleton />}>
             <PostList postsPromise={postsPromise} />
