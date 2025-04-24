@@ -112,7 +112,8 @@ export const getPublishedPosts = (
   tag: string = NOTION_TAG_ALL,
   sort: string = 'latest',
   pageSize: number = 4,
-  startCursor: string = ''
+  startCursor: string = '',
+  q: string = ''
 ) =>
   unstable_cache(
     async () => {
@@ -131,6 +132,28 @@ export const getPublishedPosts = (
           (filter.and as QueryDatabaseParameters['filter'][]).push({
             property: 'Tags',
             multi_select: { contains: tag },
+          });
+        }
+        if (q && q.trim()) {
+          (filter.and as QueryDatabaseParameters['filter'][]).push({
+            or: [
+              {
+                property: 'Title',
+                title: { contains: q },
+              },
+              {
+                property: 'Description',
+                rich_text: { contains: q },
+              },
+              {
+                property: 'Slug',
+                rich_text: { contains: q },
+              },
+              {
+                property: 'Tags',
+                multi_select: { contains: q },
+              },
+            ],
           });
         }
         const response = await notion.databases.query({
@@ -158,7 +181,7 @@ export const getPublishedPosts = (
         return { posts: [], hasMore: false, nextCursor: null };
       }
     },
-    ['posts', tag, sort, String(pageSize), startCursor],
+    ['posts', tag, sort, String(pageSize), startCursor, q],
     {
       tags: ['posts'],
       revalidate: 60,

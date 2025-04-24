@@ -8,6 +8,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { SearchInput } from '@/components/ui/SearchInput';
 
 export default function SortSelect() {
   const router = useRouter();
@@ -34,3 +35,18 @@ export default function SortSelect() {
     </Select>
   );
 }
+
+function SearchSortBar() {
+  return (
+    <div className="flex w-full flex-col gap-2 md:flex-row md:items-center md:gap-4">
+      <div className="flex-1">
+        <SearchInput />
+      </div>
+      <div>
+        <SortSelect />
+      </div>
+    </div>
+  );
+}
+
+export { SearchSortBar };

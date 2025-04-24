@@ -5,9 +5,10 @@ import PostListSkeleton from '@/components/features/blog/PostListSkeleton';
 import TagSectionSkeleton from '@/app/_components/TagSectionSkeleton';
 import { Metadata } from 'next';
 import TagSection from './_components/TagSection';
+import { SearchSortBar } from './_components/client/SortSelect';
 
 interface HomeProps {
-  searchParams: Promise<{ tag?: string; sort?: string }>;
+  searchParams: Promise<{ tag?: string; sort?: string; q?: string }>;
 }
 
 export const metadata: Metadata = {
@@ -19,13 +20,14 @@ export const metadata: Metadata = {
 };
 
 export default async function Home({ searchParams }: HomeProps) {
-  const { tag, sort } = await searchParams;
+  const { tag, sort, q } = await searchParams;
   const selectedTag = tag || '전체';
   const selectedSort = sort || 'latest';
+  const searchQuery = q || '';
 
   const tags = await getTags();
   // getPublishedPosts는 팩토리 함수이므로 반드시 ()로 실행해야 하며, Promise를 넘겨야 함
-  const postsPromise = getPublishedPosts(selectedTag, selectedSort, 10)();
+  const postsPromise = getPublishedPosts(selectedTag, selectedSort, 10, '', searchQuery)();
   return (
     <div className="container py-8">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-[200px_1fr_220px]">
@@ -36,6 +38,8 @@ export default async function Home({ searchParams }: HomeProps) {
           </Suspense>
         </aside>
         <div className="order-3 space-y-8 md:order-none">
+          {/* 검색/정렬 바 */}
+          <SearchSortBar />
           {/* 블로그 카드 그리드 */}
           <Suspense fallback={<PostListSkeleton />}>
             <PostList postsPromise={postsPromise} />

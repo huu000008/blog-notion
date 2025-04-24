@@ -18,12 +18,14 @@ export default function PostList({ postsPromise }: PostListProps) {
   const searchParams = useSearchParams();
   const tag = searchParams.get('tag');
   const sort = searchParams.get('sort');
+  const q = searchParams.get('q');
   const pageSize = 2;
 
   const fetchPosts = async ({ pageParam }: { pageParam: string | undefined }) => {
     const params = new URLSearchParams();
     if (tag) params.set('tag', tag);
     if (sort) params.set('sort', sort);
+    if (q) params.set('q', q);
     if (pageParam) params.set('startCursor', pageParam);
     params.set('pageSize', pageSize.toString());
 
@@ -35,7 +37,7 @@ export default function PostList({ postsPromise }: PostListProps) {
   };
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ['posts', tag, sort, pageSize],
+    queryKey: ['posts', tag, sort, q, pageSize],
     queryFn: fetchPosts,
     initialPageParam: undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
