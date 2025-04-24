@@ -28,7 +28,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ] as const;
 
   // 블로그 게시물 가져오기
-  const { posts } = await getPublishedPosts({ pageSize: 100 });
+  const postsResponse = await getPublishedPosts();
+  const { posts } = await postsResponse();
 
   // 블로그 게시물 URL 생성
   const blogPosts = posts.map((post) => ({
