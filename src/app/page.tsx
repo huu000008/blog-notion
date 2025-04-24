@@ -1,10 +1,10 @@
 import { getTags, getPublishedPosts } from '@/lib/notion';
-import PostListSuspense from '@/components/features/blog/PostListSuspense';
+import PostList from '@/components/features/blog/PostList';
 import { Suspense } from 'react';
-import TagSectionClient from '@/app/_components/TagSection.client';
 import PostListSkeleton from '@/components/features/blog/PostListSkeleton';
 import TagSectionSkeleton from '@/app/_components/TagSectionSkeleton';
 import { Metadata } from 'next';
+import TagSection from './_components/TagSection';
 
 interface HomeProps {
   searchParams: Promise<{ tag?: string; sort?: string }>;
@@ -32,13 +32,13 @@ export default async function Home({ searchParams }: HomeProps) {
         {/* 좌측 사이드바 */}
         <aside className="order-2 md:order-none">
           <Suspense fallback={<TagSectionSkeleton />}>
-            <TagSectionClient tags={tags} selectedTag={selectedTag} />
+            <TagSection tags={tags} selectedTag={selectedTag} />
           </Suspense>
         </aside>
         <div className="order-3 space-y-8 md:order-none">
           {/* 블로그 카드 그리드 */}
           <Suspense fallback={<PostListSkeleton />}>
-            <PostListSuspense postsPromise={postsPromise} />
+            <PostList postsPromise={postsPromise} />
           </Suspense>
         </div>
         {/* 우측 사이드바 */}
