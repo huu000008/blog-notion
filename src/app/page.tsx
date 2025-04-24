@@ -30,23 +30,16 @@ export default async function Home({ searchParams }: HomeProps) {
   const postsPromise = getPublishedPosts(selectedTag, selectedSort, 10, '', searchQuery)();
   return (
     <div className="container py-8">
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-[200px_1fr_220px]">
-        {/* 좌측 사이드바 */}
-        <aside className="order-2 md:order-none">
-          <Suspense fallback={<TagSectionSkeleton />}>
-            <TagSection tags={tags} selectedTag={selectedTag} searchQuery={searchQuery} />
-          </Suspense>
-        </aside>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_220px]">
         <div className="order-3 space-y-8 md:order-none">
-          {/* 블로그 카드 그리드 */}
           <Suspense fallback={<PostListSkeleton />}>
             <PostList postsPromise={postsPromise} />
           </Suspense>
         </div>
-        {/* 우측 사이드바 */}
-        <aside className="order-1 flex flex-col gap-6 md:order-none">
-          {/* <ProfileSection /> */}
-          {/* <ContactSection /> */}
+        <aside className="order-2 md:order-none">
+          <Suspense fallback={<TagSectionSkeleton />}>
+            <TagSection tags={tags} selectedTag={selectedTag} searchQuery={searchQuery} />
+          </Suspense>
         </aside>
       </div>
     </div>
