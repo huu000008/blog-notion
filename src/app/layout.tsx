@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/layouts/Header';
-import Footer from '@/components/layouts/Footer';
 import Providers from './providers';
 
 const geistSans = Geist({
@@ -21,8 +20,8 @@ export const metadata: Metadata = {
     default: '조혁래 블로그',
   },
   description: '프론트엔드 개발과 관련된 다양한 지식과 경험을 공유하는 블로그입니다.',
-  keywords: ['Next.js', '프론트엔드', '웹개발', '코딩', '프로그래밍', '리액트'],
-  authors: [{ name: '조혁래', url: 'https://github.com/gymcoding' }],
+  keywords: ['프론트엔드', '웹개발', '코딩', 'React', 'Next.js', '블로그'],
+  authors: [{ name: '조혁래', url: 'https://github.com/huu000008' }],
   creator: '조혁래',
   publisher: '조혁래',
   formatDetection: {
@@ -51,16 +50,9 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers>
           <div className="flex min-h-screen flex-col">
-            {/* Header 영역 */}
             <Header />
-            {/* Main 영역 */}
             <main className="flex-1">{children}</main>
-
-            {/* Modal 영역 */}
             {modal}
-
-            {/* Footer 영역 */}
-            <Footer />
           </div>
         </Providers>
       </body>

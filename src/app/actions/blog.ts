@@ -3,7 +3,6 @@
 import { createPost } from '@/lib/notion';
 import { z } from 'zod';
 import { revalidateTag } from 'next/cache';
-import { getPublishedPosts } from '@/lib/notion';
 
 const postSchema = z.object({
   title: z.string().min(1, { message: '제목을 입력해주세요.' }),
@@ -71,14 +70,4 @@ export async function createPostAction(prevState: PostFormState, formData: FormD
   }
   // revalidatePath('/');
   // redirect('/');
-}
-
-export async function getPosts(
-  tag?: string,
-  sort?: string,
-  startCursor?: string,
-  pageSize?: number
-) {
-  const posts = await getPublishedPosts({ tag, sort, startCursor, pageSize });
-  return posts;
 }

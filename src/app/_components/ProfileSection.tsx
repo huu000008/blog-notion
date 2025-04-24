@@ -5,19 +5,19 @@ import { ProfileImage } from '@/components/ProfileImage';
 const socialLinks = [
   {
     icon: Youtube,
-    href: 'https://www.youtube.com/gymcoding',
+    href: 'https://www.youtube.com/johyukrae',
   },
   {
     icon: Github,
-    href: 'https://github.com/gymcoding',
+    href: 'https://github.com/johyukrae',
   },
   {
     icon: BookOpen,
-    href: 'https://www.inflearn.com/users/432199/@gymcoding',
+    href: 'https://www.inflearn.com/users/432199/@johyukrae',
   },
   {
     icon: Instagram,
-    href: 'https://www.instagram.com/gymcoding',
+    href: 'https://www.instagram.com/johyukrae',
   },
 ];
 export default function ProfileSection() {

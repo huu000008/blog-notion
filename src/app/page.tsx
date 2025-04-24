@@ -1,5 +1,4 @@
 import { getTags, getPublishedPosts } from '@/lib/notion';
-import HeaderSection from '@/app/_components/HeaderSection';
 import PostListSuspense from '@/components/features/blog/PostListSuspense';
 import { Suspense } from 'react';
 import TagSectionClient from '@/app/_components/TagSection.client';
@@ -37,8 +36,6 @@ export default async function Home({ searchParams }: HomeProps) {
           </Suspense>
         </aside>
         <div className="order-3 space-y-8 md:order-none">
-          {/* 섹션 제목 */}
-          <HeaderSection selectedTag={selectedTag} />
           {/* 블로그 카드 그리드 */}
           <Suspense fallback={<PostListSkeleton />}>
             <PostListSuspense postsPromise={postsPromise} />

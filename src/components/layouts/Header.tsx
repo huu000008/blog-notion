@@ -7,7 +7,7 @@ export default function Header() {
         <div className="grid w-full grid-cols-2 items-center">
           <div className="flex items-center justify-start">
             <Link href="/" className="text-xl font-semibold">
-              <span className="font-bold">블로그</span>
+              <span className="font-bold">BLOG</span>
             </Link>
           </div>
 
