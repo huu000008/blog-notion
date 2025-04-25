@@ -8,7 +8,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, use } from 'react';
 import { useInView } from 'react-intersection-observer';
-
+import { FadeInSection } from '@/components/FadeInSection';
 interface PostListProps {
   postsPromise: Promise<GetPublishedPostsResponse>;
   q?: string;
@@ -86,7 +86,9 @@ export default function PostList({ postsPromise, q }: PostListProps) {
         <div className="grid gap-4">
           {allPosts.map((post, index) => (
             <Link href={`/blog/${post.slug}`} key={post.id}>
-              <PostCard post={post} isFirst={index === 0} />
+              <FadeInSection>
+                <PostCard post={post} isFirst={index === 0} />
+              </FadeInSection>
             </Link>
           ))}
         </div>
