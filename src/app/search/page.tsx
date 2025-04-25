@@ -4,11 +4,11 @@ import PostListSkeleton from '@/components/features/blog/PostListSkeleton';
 import { Suspense } from 'react';
 
 interface SearchPageProps {
-  searchParams: { q?: string };
+  searchParams: Promise<{ q?: string }>;
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
-  const q = searchParams.q || '';
+  const q = (await searchParams).q || '';
   const postsPromise = getPublishedPosts('ALL', 'latest', 10, '', q)();
 
   return (
