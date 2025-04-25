@@ -3,28 +3,36 @@ import { Skeleton } from '@/components/ui/skeleton';
 export default function Loading() {
   return (
     <div className="container py-6 md:py-8 lg:py-12">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-[240px_1fr_240px] md:gap-8">
-        <aside className="space-y-4"></aside>
-        <div className="space-y-8">
-          {/* 헤더 */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_240px] md:gap-8">
+        <section>
           <div className="space-y-4">
-            <Skeleton className="h-8 w-[250px]" />
-            <Skeleton className="h-4 w-[180px]" />
+            <div className="flex gap-2">
+              <Skeleton className="h-6 w-14 rounded-full" />
+              <Skeleton className="h-6 w-14 rounded-full" />
+            </div>
+            <Skeleton className="h-10 w-3/4" />
+            <div className="text-muted-foreground flex gap-4 text-sm">
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-4 w-16" />
+            </div>
           </div>
-
-          {/* 메인 이미지 */}
-          <Skeleton className="aspect-video w-full rounded-lg" />
-
-          {/* 본문 컨텐츠 */}
+          <div className="my-8">
+            <Skeleton className="h-[2px] w-full" />
+          </div>
           <div className="space-y-4">
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-4/5" />
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-2/3" />
+            {Array.from({ length: 8 }).map((_, i) => (
+              <Skeleton key={i} className={`h-4 ${i % 3 === 0 ? 'w-4/5' : 'w-full'}`} />
+            ))}
           </div>
-        </div>
-        <aside className="space-y-4"></aside>
+        </section>
+        <aside className="hidden md:block">
+          <div className="sticky top-[var(--sticky-top)] space-y-4">
+            <Skeleton className="mb-2 h-6 w-24" />
+            {Array.from({ length: 7 }).map((_, i) => (
+              <Skeleton key={i} className="mb-2 h-4 w-32" />
+            ))}
+          </div>
+        </aside>
       </div>
     </div>
   );
