@@ -20,14 +20,12 @@ export const metadata: Metadata = {
 };
 
 export default async function Home({ searchParams }: HomeProps) {
-  const { tag, sort, q } = await searchParams;
+  const { tag, sort } = await searchParams;
   const selectedTag = tag || NOTION_TAG_ALL;
   const selectedSort = sort || 'latest';
-  const searchQuery = q || '';
 
   const tags = await getTags();
-  // getPublishedPosts는 팩토리 함수이므로 반드시 ()로 실행해야 하며, Promise를 넘겨야 함
-  const postsPromise = getPublishedPosts(selectedTag, selectedSort, 10, '', searchQuery)();
+  const postsPromise = getPublishedPosts(selectedTag, selectedSort, 10, '', '')();
   return (
     <div className="container py-8">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_220px]">
@@ -38,7 +36,7 @@ export default async function Home({ searchParams }: HomeProps) {
         </div>
         <aside className="order-2 md:order-none">
           <Suspense fallback={<TagSectionSkeleton />}>
-            <TagSection tags={tags} selectedTag={selectedTag} searchQuery={searchQuery} />
+            <TagSection tags={tags} selectedTag={selectedTag} searchQuery={''} />
           </Suspense>
         </aside>
       </div>

@@ -10,7 +10,7 @@ interface TagSectionProps {
   searchQuery?: string;
 }
 
-export default function TagSection({ tags, selectedTag, searchQuery }: TagSectionProps) {
+export default function TagSection({ tags, selectedTag, searchQuery = '' }: TagSectionProps) {
   return (
     <Card>
       <CardHeader>

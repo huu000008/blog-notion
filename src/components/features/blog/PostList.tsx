@@ -11,21 +11,22 @@ import { useInView } from 'react-intersection-observer';
 
 interface PostListProps {
   postsPromise: Promise<GetPublishedPostsResponse>;
+  q?: string;
 }
 
-export default function PostList({ postsPromise }: PostListProps) {
+export default function PostList({ postsPromise, q }: PostListProps) {
   const initialData = use(postsPromise);
   const searchParams = useSearchParams();
   const tag = searchParams.get('tag');
   const sort = searchParams.get('sort');
-  const q = searchParams.get('q');
+  const qParam = typeof q === 'string' ? q : searchParams.get('q');
   const pageSize = 2;
 
   const fetchPosts = async ({ pageParam }: { pageParam: string | undefined }) => {
     const params = new URLSearchParams();
     if (tag) params.set('tag', tag);
     if (sort) params.set('sort', sort);
-    if (q) params.set('q', q);
+    if (qParam) params.set('q', qParam);
     if (pageParam) params.set('startCursor', pageParam);
     params.set('pageSize', pageSize.toString());
 
@@ -37,7 +38,7 @@ export default function PostList({ postsPromise }: PostListProps) {
   };
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ['posts', tag, sort, q, pageSize],
+    queryKey: ['posts', tag, sort, qParam, pageSize],
     queryFn: fetchPosts,
     initialPageParam: undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
@@ -68,7 +69,14 @@ export default function PostList({ postsPromise }: PostListProps) {
     <div className="space-y-6">
       {allPosts.length === 0 ? (
         <div className="flex h-[300px] flex-col items-center justify-center py-24">
-          <span className="text-muted-foreground text-lg">검색 결과가 없습니다.</span>
+          {qParam ? (
+            <span className="text-muted-foreground text-lg">
+              <span className="text-primary font-semibold">&quot;{qParam}&quot;</span> 검색 결과가
+              없습니다.
+            </span>
+          ) : (
+            <span className="text-muted-foreground text-lg">검색 결과가 없습니다.</span>
+          )}
           <span className="text-muted-foreground/70 mt-2 text-sm">
             다른 <b className="text-primary">태그</b>를 선택하거나{' '}
             <b className="text-primary">검색어</b>를 변경해보세요.

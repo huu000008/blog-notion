@@ -16,7 +16,7 @@ export default function Header() {
   const handleSearch = (q: string) => {
     setOpen(false);
     if (q.trim()) {
-      router.push(`/?q=${encodeURIComponent(q.trim())}`);
+      router.push(`/search?q=${encodeURIComponent(q.trim())}`);
     }
   };
 
@@ -29,7 +29,6 @@ export default function Header() {
               <span className="font-bold">BLOG</span>
             </Link>
           </div>
-
           <div className="flex items-center justify-end gap-2">
             <Button
               variant="ghost"
