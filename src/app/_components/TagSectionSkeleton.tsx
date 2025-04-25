@@ -6,13 +6,13 @@ export default function TagSectionSkeleton() {
     <Card>
       <CardHeader>
         <CardTitle>
-          <Skeleton className="h-6 w-20 rounded" />
+          <Skeleton className="h-6 w-20 rounded" aria-hidden role="presentation" />
         </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-3">
           {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="h-8 w-full rounded-md" />
+            <Skeleton key={i} className="h-8 w-full rounded-md" aria-hidden role="presentation" />
           ))}
         </div>
       </CardContent>
